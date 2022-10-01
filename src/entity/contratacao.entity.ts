@@ -11,6 +11,9 @@ export class ContratacaoEntity{
     @Column({ })
     status: String;
 
+    @Column({ })
+    data: Date;
+
     @OneToOne(() => EntregaEntity, {
         cascade: ["insert", "update", "remove"],
         onDelete: "CASCADE",
