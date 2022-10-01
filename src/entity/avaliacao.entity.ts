@@ -1,4 +1,5 @@
-import {PrimaryGeneratedColumn, Column, Entity} from 'typeorm'
+import {PrimaryGeneratedColumn, Column, Entity, ManyToOne, JoinColumn, OneToMany} from 'typeorm'
+import { UsuarioEntity } from './usuario.entity';
 
 @Entity({name:"avaliacao"})
 export class AvaliacaoEntity{
@@ -11,9 +12,11 @@ export class AvaliacaoEntity{
     @Column({ })
     estrelas: Number;
 
-    @Column({ })
-    codperfilavaliado: Number;
+    @ManyToOne((type) => UsuarioEntity, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "codperfilavaliado" })
+    perfilavaliado: UsuarioEntity;
 
-    @Column({ })
-    codusuarioavaliador: Number;
+    @ManyToOne((type) => UsuarioEntity, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "codperfilavaliador" })
+    perfilavaliador: UsuarioEntity;
 }

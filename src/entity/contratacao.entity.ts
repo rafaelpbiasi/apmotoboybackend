@@ -1,4 +1,4 @@
-import {PrimaryGeneratedColumn, Column, Entity} from 'typeorm'
+import {PrimaryGeneratedColumn, Column, Entity, ManyToOne, JoinColumn, OneToOne} from 'typeorm'
 
 import { UsuarioEntity } from './usuario.entity';
 import { EntregaEntity } from './entrega.entity';
@@ -9,21 +9,21 @@ export class ContratacaoEntity{
     id: number;
 
     @Column({ })
-    codentrega: Number;
-
-    @Column({ })
-    codusuariocontratante: Number;
-
-    @Column({ })
-    codusuariocontratado: Number;
-
-    @Column({ })
     status: String;
 
-    @Column({ })
-    codperfilcontratante: Number;
+    @OneToOne(() => EntregaEntity, {
+        cascade: ["insert", "update", "remove"],
+        onDelete: "CASCADE",
+      })
+      @JoinColumn({ name: "codentrega" })
+      entrega: EntregaEntity;
 
-    @Column({ })
-    codperfilcontratado: Number;
+    @ManyToOne((type) => UsuarioEntity, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "codusuariocontratante" })
+    contratante: UsuarioEntity;
+
+    @ManyToOne((type) => UsuarioEntity, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "codusuariocontratado" })
+    contratado: UsuarioEntity;
 
 }

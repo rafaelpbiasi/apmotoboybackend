@@ -1,4 +1,5 @@
-import {PrimaryGeneratedColumn, Column, Entity, Double} from 'typeorm'
+import {PrimaryGeneratedColumn, Column, Entity, Double, OneToOne, JoinColumn} from 'typeorm'
+import { ContratacaoEntity } from './contratacao.entity';
 
 @Entity({name:"entrega"})
 export class EntregaEntity{
@@ -32,7 +33,25 @@ export class EntregaEntity{
     @Column({ nullable: false })
     flagtipoveiculo: String;
 
+    @Column({ type: "decimal" })
+    valor: Number;
+
+    @Column({ })
+    LongitudeOrigem: Number;
+
+    @Column({ })
+    LatitudeOrigem: Number;
+
+    @Column({ })
+    LongitudeDestino: Number;
+
+    @Column({ })
+    LatitudeDestino: Number;
+
     @Column({  })
-    valor: Double;
+    item: String;
+
+    @OneToOne(() => ContratacaoEntity, (contratacao) => contratacao.entrega)
+    contratacao: ContratacaoEntity;
 
 }
