@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { upload } from "../config/upload";
 import usuarioController from "../controller/usuario.controller";
 
 class Routes {
@@ -13,6 +14,18 @@ class Routes {
     this.router.get(
       "/",
       usuarioController.findAll
+    );
+    this.router.post(
+      "/", [upload().single("fotocnh")],
+      usuarioController.create
+    );
+    /*this.router.post(
+      "/updateimageperfil", [upload().single("image")],
+      usuarioController.create
+    );*/
+    this.router.post(
+      "/login",
+      usuarioController.login
     );
   }
 }

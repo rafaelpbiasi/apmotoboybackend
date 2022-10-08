@@ -1,6 +1,6 @@
 import * as express from "express";
 import * as cors from "cors";
-import { UsuarioRouter } from "./routes";
+import { AvaliacaoRouter, ContratacaoRouter, EntregaRouter, UsuarioRouter } from "./routes";
 
 class App {
   public express: express.Application;
@@ -16,11 +16,14 @@ class App {
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: true }));
     this.express.use(cors());
-    //this.express.use(express.static("uploads"));
+    this.express.use(express.static("uploads"));
   }
 
   private routes(): void {
     this.express.use("/usuario", UsuarioRouter());
+    this.express.use("/avaliacao", AvaliacaoRouter());
+    this.express.use("/contratacao", ContratacaoRouter());
+    this.express.use("/entrega", EntregaRouter());
   }
 }
 

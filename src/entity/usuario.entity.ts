@@ -20,28 +20,28 @@ export class UsuarioEntity{
     senha: String;
 
     @Column({ nullable: false })
-    confirmasenha: String;
-
-    @Column({ nullable: false })
     cpfcnpj: String;
 
     @Column({ nullable: false })
     flagtipousuario: String;
 
-    @Column({  })
+    @Column({ nullable: true })
     rua: String;
 
-    @Column({  })
-    numero: number;
+    @Column({ nullable: true })
+    numero: string;
 
-    @Column({ nullable: false })
-    cep: number;
+    @Column({ nullable: true })
+    cep: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     flagtipoveiculo: String;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     fotocnh: String;
+
+    @Column({ nullable: true })
+    fotoperfil: String;
 
     @Column({ nullable: false })
     flagconfirmatermos: String;
