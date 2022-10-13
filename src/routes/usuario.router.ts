@@ -19,10 +19,6 @@ class Routes {
       "/", [upload().single("fotocnh")],
       usuarioController.create
     );
-    /*this.router.post(
-      "/updateimageperfil", [upload().single("image")],
-      usuarioController.create
-    );*/
     this.router.post(
       "/login",
       usuarioController.login

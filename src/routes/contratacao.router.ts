@@ -14,6 +14,11 @@ class Routes {
       "/",
       contratacaoController.findAll
     );
+
+    this.router.get(
+      "/porContratante/:id([0-9]+)",
+      contratacaoController.findByContratante
+    );
   }
 }
 

@@ -15,7 +15,7 @@ export class EntregaEntity{
     @Column({ nullable: false })
     bairroorigem: String;
 
-    @Column({  })
+    @Column({ nullable: true })
     referenciaorigem: String;
 
     @Column({ nullable: false })
@@ -27,29 +27,35 @@ export class EntregaEntity{
     @Column({ nullable: false })
     bairrodestino: String;
 
-    @Column({  })
+    @Column({ nullable: true })
     referenciadestino: String;
 
     @Column({ nullable: false })
     flagtipoveiculo: String;
 
-    @Column({ type: "decimal" })
+    @Column({ type: "decimal", nullable: true})
     valor: Number;
 
-    @Column({ })
+    @Column({ nullable: true })
     LongitudeOrigem: Number;
 
-    @Column({ })
+    @Column({ nullable: true })
     LatitudeOrigem: Number;
 
-    @Column({ })
+    @Column({ nullable: true })
     LongitudeDestino: Number;
 
-    @Column({ })
+    @Column({ nullable: true })
     LatitudeDestino: Number;
 
-    @Column({  })
+    @Column({ nullable: true })
     item: String;
+
+    @Column({ nullable: true })
+    estado: String;
+
+    @Column({ nullable: true })
+    cidade: String;
 
     @OneToOne(() => ContratacaoEntity, (contratacao) => contratacao.entrega)
     contratacao: ContratacaoEntity;

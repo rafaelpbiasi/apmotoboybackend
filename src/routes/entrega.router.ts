@@ -14,6 +14,10 @@ class Routes {
       "/",
       entregaController.findAll
     );
+    this.router.post(
+      "/",
+      entregaController.create
+    );
   }
 }
 
