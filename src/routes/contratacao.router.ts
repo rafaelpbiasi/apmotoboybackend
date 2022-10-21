@@ -31,6 +31,18 @@ class Routes {
       "/motoboys",
       contratacaoController.findByMotoboys
     );
+    this.router.get(
+      "/entregas/:id([0-9]+)/:status",
+      contratacaoController.findByEntregaStatus
+    );
+    this.router.get(
+      "/motoboys/:id([0-9]+)/:status",
+      contratacaoController.findByMotoboysStatus
+    );
+    this.router.get(
+      "/motoboys/veiculo/:veiculo",
+      contratacaoController.findByMotoboysVeiculo
+    );
   }
 }
 
