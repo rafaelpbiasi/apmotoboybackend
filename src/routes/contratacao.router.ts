@@ -15,6 +15,11 @@ class Routes {
       contratacaoController.findAll
     );
 
+    this.router.post(
+      "/",
+      contratacaoController.create
+    );
+
     this.router.get(
       "/porContratante/:id([0-9]+)",
       contratacaoController.findByContratante
@@ -27,10 +32,7 @@ class Routes {
       "/entregas",
       contratacaoController.findByEntrega
     );
-    this.router.get(
-      "/motoboys",
-      contratacaoController.findByMotoboys
-    );
+    
     this.router.get(
       "/entregas/:id([0-9]+)/:status",
       contratacaoController.findByEntregaStatus
@@ -38,10 +40,6 @@ class Routes {
     this.router.get(
       "/motoboys/:id([0-9]+)/:status",
       contratacaoController.findByMotoboysStatus
-    );
-    this.router.get(
-      "/motoboys/veiculo/:veiculo",
-      contratacaoController.findByMotoboysVeiculo
     );
   }
 }

@@ -23,6 +23,14 @@ class Routes {
       "/login",
       usuarioController.login
     );
+    this.router.get(
+      "/motoboys",
+      usuarioController.findByMotoboys
+    );
+    this.router.get(
+      "/motoboys/veiculo/:veiculo",
+      usuarioController.findByMotoboysVeiculo
+    );
   }
 }
 

@@ -8,10 +8,10 @@ export class ContratacaoEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ })
+    @Column({  nullable: true  })
     status: String;
 
-    @Column({ })
+    @Column({  nullable: true  })
     data: Date;
 
     @OneToOne(() => EntregaEntity, {

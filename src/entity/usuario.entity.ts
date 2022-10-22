@@ -40,9 +40,6 @@ export class UsuarioEntity{
     @Column({ nullable: true })
     fotocnh: String;
 
-    @Column({ nullable: true })
-    fotoperfil: String;
-
     @Column({ nullable: false })
     flagconfirmatermos: String;
 

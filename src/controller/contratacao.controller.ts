@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Equal, getRepository } from "typeorm";
-import { string } from "yup";
+import * as Yup from "yup"
 import { ContratacaoEntity } from "../entity/contratacao.entity";
 import { EntregaEntity } from "../entity/entrega.entity";
 import { UsuarioEntity } from "../entity/usuario.entity";
@@ -12,6 +12,40 @@ class ContratacaoController{
             res.status(200).send({contratacoes});
         }catch (error) {
             res.status(500).send({ error});
+        }
+    }
+
+    public async create(req:Request, res:Response){
+        try{
+            const data = req.body
+            console.log(data)
+            const schema = Yup.object().shape({});
+        
+            //Valida Estrutura Json
+            await schema.validate(data, {
+              abortEarly: false,
+            });
+
+            const contratacao = getRepository(ContratacaoEntity).create({ 
+                status: data.status,
+                contratado: data.codusuariocontratado,
+                contratante: data.codusuariocontratante,
+                entrega: data.codentrega,
+                data: data.data,
+            })
+            await getRepository(ContratacaoEntity).save(contratacao)
+
+            res.status(201).send(contratacao);
+        }catch (error) {
+            if (error instanceof Yup.ValidationError) {
+                const errorMessages = {};
+                error.inner.forEach((err) => {
+                  errorMessages[err.path] = err.message;
+                });
+                return res.status(400).send(errorMessages);
+              } else {
+                return res.status(500).send(error);
+              }
         }
     }
 
@@ -40,7 +74,7 @@ class ContratacaoController{
         )
         .getMany();
             
-            res.status(200).send({contratacoes});
+            res.status(200).send({data:contratacoes});
         }catch (error) {
             res.status(500).send({ error});
         }
@@ -71,7 +105,7 @@ class ContratacaoController{
         )
         .getMany();
             
-            res.status(200).send({contratacoesMotoboy});
+            res.status(200).send({data:contratacoesMotoboy});
         }catch (error) {
             res.status(500).send({ error});
         }
@@ -95,30 +129,6 @@ class ContratacaoController{
         .getMany();
             
             res.status(200).send({contratacoesEntrega});
-        }catch (error) {
-            res.status(500).send({ error});
-        }
-    }
-
-    public async findByMotoboys(req:Request, res:Response){
-        try{
-            
-          const contratacoesMotoboys = await getRepository(ContratacaoEntity).createQueryBuilder("contratacoesmotoboys")
-        .leftJoinAndSelect("contratacoesmotoboys.entrega", "entrega")
-        .leftJoinAndSelect("contratacoesmotoboys.contratante", "contratante")
-        .leftJoinAndSelect("contratacoesmotoboys.contratado", "contratado")
-        .select("contratacoesmotoboys", "id")
-        .addSelect([
-            "entrega",
-            "contratante.id",
-            "contratante.nome",
-            "contratado.id",
-            "contratado.nome",
-            "contratado.flagtipoveiculo",
-        ])
-        .getMany();
-            
-            res.status(200).send({contratacoesMotoboys});
         }catch (error) {
             res.status(500).send({ error});
         }
@@ -150,7 +160,7 @@ class ContratacaoController{
         .getMany();
             
         console.log(contratacoesEntrega)
-            res.status(200).send({contratacoesEntrega});
+            res.status(200).send({data:contratacoesEntrega});
         }catch (error) {
             console.log(error)
             res.status(500).send({ error});
@@ -183,37 +193,7 @@ class ContratacaoController{
         )
         .getMany();
             
-            res.status(200).send({contratacoesMotoboys});
-        }catch (error) {
-            res.status(500).send({ error});
-        }
-    }
-
-    public async findByMotoboysVeiculo(req:Request, res:Response){
-        try{
-        
-        const veiculoentrega = req.params.veiculo
-        const veiculo = await getRepository(UsuarioEntity).findOneBy({flagtipoveiculo: Equal(veiculoentrega)})
-
-        const contratacoesMotoboys = await getRepository(ContratacaoEntity).createQueryBuilder("contratacoesmotoboys")
-        .leftJoinAndSelect("contratacoesmotoboys.entrega", "entrega")
-        .leftJoinAndSelect("contratacoesmotoboys.contratante", "contratante")
-        .leftJoinAndSelect("contratacoesmotoboys.contratado", "contratado")
-        .select("contratacoesmotoboys", "id")
-        .addSelect([
-            "entrega",
-            "contratante.id",
-            "contratante.nome",
-            "contratado.id",
-            "contratado.nome",
-            "contratado.flagtipoveiculo",
-        ])
-        .where(
-         `contratado.flagtipoveiculo='${veiculo.flagtipoveiculo}' `
-        )
-        .getMany();
-            
-            res.status(200).send({contratacoesMotoboys});
+            res.status(200).send({data:contratacoesMotoboys});
         }catch (error) {
             res.status(500).send({ error});
         }

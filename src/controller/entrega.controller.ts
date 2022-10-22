@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { EntregaEntity } from "../entity/entrega.entity";
 import * as Yup from "yup"
+import { UsuarioEntity } from "../entity/usuario.entity";
 
 class EntregaController{
     public async findAll(req:Request, res:Response){

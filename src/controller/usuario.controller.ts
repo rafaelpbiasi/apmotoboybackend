@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
+import { Equal, getRepository } from "typeorm";
 import { UsuarioEntity } from "../entity/usuario.entity";
 import * as Yup from "yup"
 
@@ -75,5 +75,39 @@ class UsuarioController{
               }
         }
     }
+
+    public async findByMotoboys(req:Request, res:Response){
+      try{
+          
+      const findMotoboys = await getRepository(UsuarioEntity).createQueryBuilder("findmotoboys")
+      .select("findmotoboys", "id")
+      .getMany();
+          
+          res.status(200).send({data:findMotoboys});
+      }catch (error) {
+        console.log(error)
+          res.status(500).send({ error});
+      }
+  }
+
+  public async findByMotoboysVeiculo(req:Request, res:Response){
+    try{
+    
+    const veiculoentrega = req.params.veiculo
+    const veiculo = await getRepository(UsuarioEntity).findOneBy({flagtipoveiculo: Equal(veiculoentrega)})
+
+    const findMotoboys = await getRepository(UsuarioEntity).createQueryBuilder("findmotoboys")
+    .select("findmotoboys", "id")
+    .where(
+     `findmotoboys.flagtipoveiculo='${veiculo.flagtipoveiculo}' `
+    )
+    .getMany();
+        
+        res.status(200).send({data:findMotoboys});
+    }catch (error) {
+        res.status(500).send({ error});
+    }
+}
+
 }
 export default new UsuarioController();
