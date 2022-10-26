@@ -33,7 +33,11 @@ export class EntregaEntity{
     @Column({ nullable: false })
     flagtipoveiculo: String;
 
-    @Column({ type: "decimal", nullable: true})
+    @Column({ nullable: true,
+        type: "decimal",
+        precision: 7,
+        scale: 2,
+        default: 0,})
     valor: Number;
 
     @Column({ nullable: true })

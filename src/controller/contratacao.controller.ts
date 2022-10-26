@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Equal, getRepository } from "typeorm";
+import { Equal, getRepository, MoreThanOrEqual, Raw } from "typeorm";
 import * as Yup from "yup"
 import { ContratacaoEntity } from "../entity/contratacao.entity";
 import { EntregaEntity } from "../entity/entrega.entity";
@@ -15,6 +15,17 @@ class ContratacaoController{
         }
     }
 
+    public async update(req:Request, res:Response){
+        // PEGAR ID DO REGISTRO
+
+        // Pesquisar para ver se o registro existir senao existir retorna 404
+
+        // Pegar os 
+
+
+
+    }
+
     public async create(req:Request, res:Response){
         try{
             const data = req.body
@@ -25,6 +36,7 @@ class ContratacaoController{
             await schema.validate(data, {
               abortEarly: false,
             });
+
 
             const contratacao = getRepository(ContratacaoEntity).create({ 
                 status: data.status,
@@ -111,6 +123,43 @@ class ContratacaoController{
         }
     }
 
+    public async findByEntregaValor(req:Request, res:Response){
+        try{
+        const valorEntrega = req.params.valor
+        const valor = await getRepository(EntregaEntity).findBy({
+            valor: MoreThanOrEqual(valorEntrega)
+        })
+
+        if (valor.length == 0){
+            return res.status(200).send({data:[]});
+        }
+        const valores = valor.map(item=>{
+            return item.id
+        })
+
+        const contratacoesEntregaValor = await getRepository(ContratacaoEntity).createQueryBuilder("contratacoesentregavalor")
+        .leftJoinAndSelect("contratacoesentregavalor.entrega", "entrega")
+        .leftJoinAndSelect("contratacoesentregavalor.contratante", "contratante")
+        .leftJoinAndSelect("contratacoesentregavalor.contratado", "contratado")
+        .select("contratacoesentregavalor", "id")
+        .addSelect([
+            "entrega",
+            "contratante.id",
+            "contratante.nome",
+            "contratado.id",
+            "contratado.nome",
+        ])
+        .where(
+         `contratacoesentregavalor.codentrega in(${valores})`
+        )
+        .getMany();
+            
+            res.status(200).send({data:contratacoesEntregaValor});
+        }catch (error) {
+            res.status(500).send({ error});
+        }
+    }
+
     public async findByEntrega(req:Request, res:Response){
         try{
             
@@ -128,7 +177,7 @@ class ContratacaoController{
         ])
         .getMany();
             
-            res.status(200).send({contratacoesEntrega});
+            res.status(200).send({data:contratacoesEntrega});
         }catch (error) {
             res.status(500).send({ error});
         }

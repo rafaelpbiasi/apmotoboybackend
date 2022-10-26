@@ -32,7 +32,10 @@ class Routes {
       "/entregas",
       contratacaoController.findByEntrega
     );
-    
+    this.router.get(
+      "/entregas/:valor",
+      contratacaoController.findByEntregaValor
+    );
     this.router.get(
       "/entregas/:id([0-9]+)/:status",
       contratacaoController.findByEntregaStatus
