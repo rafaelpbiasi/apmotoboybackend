@@ -31,6 +31,14 @@ class Routes {
       "/motoboys/veiculo/:veiculo",
       usuarioController.findByMotoboysVeiculo
     );
+    this.router.get(
+      "/perfil/:id([0-9]+)",
+      usuarioController.findByPerfil
+    );
+    this.router.get(
+      "/relatorio/:id([0-9]+)",
+      usuarioController.findByRelatorio
+    );
   }
 }
 

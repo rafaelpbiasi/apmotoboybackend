@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Equal, getRepository } from "typeorm";
 import { UsuarioEntity } from "../entity/usuario.entity";
 import * as Yup from "yup"
+import { ContratacaoEntity } from "../entity/contratacao.entity";
 
 class UsuarioController{
     public async findAll(req:Request, res:Response){
@@ -107,6 +108,66 @@ class UsuarioController{
     }catch (error) {
         res.status(500).send({ error});
     }
+}
+
+public async findByPerfil(req:Request, res:Response){
+  try{
+
+  const idUsuario = req.params.id
+  const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(idUsuario)})
+
+  const findPerfil = await getRepository(UsuarioEntity).createQueryBuilder("findperfil")
+  .select("findperfil", "id")
+  .where(
+   `findperfil.id=${usuario.id} `
+  )
+  .getOne();
+      
+  const findQtdEntrega = await getRepository(ContratacaoEntity).createQueryBuilder("findqtdentrega")
+  .select("findqtdentrega", "id")
+  .where(
+    `findqtdentrega.codusuariocontratado=${usuario.id} `
+   )
+   .getCount();
+   console.log(findQtdEntrega)
+
+      res.status(200).send({data:{
+        ...findPerfil, qtdEntrega:findQtdEntrega
+      }});
+  }catch (error) {
+      res.status(500).send({ error});
+  }
+}
+
+public async findByRelatorio(req:Request, res:Response){
+  try{
+
+  const idUsuario = req.params.id
+  const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(idUsuario)})
+
+  const findRelatorio = await getRepository(ContratacaoEntity).createQueryBuilder("findrelatorio")
+  .leftJoinAndSelect("findrelatorio.entrega", "entrega")
+  .leftJoinAndSelect("findrelatorio.contratante", "contratante")
+  .leftJoinAndSelect("findrelatorio.contratado", "contratado")
+  .select("findrelatorio", "id")
+  .addSelect([
+      "entrega",
+      "contratante.id",
+      "contratante.nome",
+      "contratado.id",
+      "contratado.nome",
+      "contratado.flagtipoveiculo",
+  ])
+  .where(
+   `findrelatorio.codusuariocontratado=${usuario.id}`
+  )
+  .getMany();
+      
+  console.log(findRelatorio)
+      res.status(200).send({data:findRelatorio});
+  }catch (error) {
+      res.status(500).send({ error});
+  }
 }
 
 }
