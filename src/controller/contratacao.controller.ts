@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { Equal, getRepository, MoreThanOrEqual, Raw } from "typeorm";
 import * as Yup from "yup"
 import { ContratacaoEntity } from "../entity/contratacao.entity";
@@ -15,7 +15,7 @@ class ContratacaoController{
         }
     }
 
-    public async update(req:Request, res:Response){
+    public async updateSenha(req:Request, res:Response){
         // PEGAR ID DO REGISTRO
 
         // Pesquisar para ver se o registro existir senao existir retorna 404
@@ -24,6 +24,64 @@ class ContratacaoController{
 
 
 
+    }
+
+    public async updateContratacaoMotoboy(req:Request, res:Response){
+        try{
+
+            const idContratacao = req.body.idContratacao
+            const idUsuario = req.body.idUsuario
+            const status = req.body.status
+            const contratacao = await getRepository(ContratacaoEntity).findOneBy({id: Number(idContratacao)})
+            
+            const contratacoes = await getRepository(ContratacaoEntity).createQueryBuilder("contratacoes")
+            .leftJoinAndSelect("contratacoes.entrega", "entrega")
+            .leftJoinAndSelect("contratacoes.contratante", "contratante")
+            .leftJoinAndSelect("contratacoes.contratado", "contratado")
+            .select("contratacoes", "id")
+            .addSelect([
+                "entrega",
+                "contratante.id",
+                "contratado.id",
+            ])
+            .where(
+            `contratacoes.id=${contratacao.id}`
+            )
+            .getOne();
+
+            console.log(contratacoes)
+
+            const contratacaoBanco = {
+                id: contratacoes.id,
+                status: contratacoes.status,
+                codusuariocontratado: 0,
+                codusuariocontratante: contratacoes.contratante.id,
+                codentrega: contratacoes.entrega.id,
+                data: contratacoes.data
+            }
+
+            console.log(contratacaoBanco)
+
+            console.log(idUsuario)
+            var body = null
+            if(idUsuario > 0){
+                body= {contratado: idUsuario, status: status};
+            }else{
+                body= {status: status};
+            }
+
+            const data={
+                ...contratacaoBanco,
+                ...body,
+            }
+
+            console.log(data)
+
+            await getRepository(ContratacaoEntity).save(data)
+            res.status(200).send({data});
+        }catch (error) {
+            res.status(500).send({ error});
+        }
     }
 
     public async create(req:Request, res:Response){
@@ -150,7 +208,7 @@ class ContratacaoController{
             "contratado.nome",
         ])
         .where(
-         `contratacoesentregavalor.codentrega in(${valores})`
+         `contratacoesentregavalor.codentrega in(${valores}) and contratacoesentregavalor.status = 'P'`
         )
         .getMany();
             
@@ -175,6 +233,9 @@ class ContratacaoController{
             "contratado.id",
             "contratado.nome",
         ])
+        .where(
+         `contratacoesentrega.status = 'P'`
+        )
         .getMany();
             
             res.status(200).send({data:contratacoesEntrega});
@@ -247,5 +308,6 @@ class ContratacaoController{
             res.status(500).send({ error});
         }
     }
+
 }
 export default new ContratacaoController();

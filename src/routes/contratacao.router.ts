@@ -44,6 +44,10 @@ class Routes {
       "/motoboys/:id([0-9]+)/:status",
       contratacaoController.findByMotoboysStatus
     );
+    this.router.patch(
+      "/atualizacontratacao",
+      contratacaoController.updateContratacaoMotoboy
+    );
   }
 }
 

@@ -36,6 +36,10 @@ class Routes {
       usuarioController.findByPerfil
     );
     this.router.get(
+      "/perfil/avaliacao/:id([0-9]+)",
+      usuarioController.findAvaliacao
+    );
+    this.router.get(
       "/relatorio/:id([0-9]+)",
       usuarioController.findByRelatorio
     );

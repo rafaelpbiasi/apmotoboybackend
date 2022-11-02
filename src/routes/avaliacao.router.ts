@@ -14,6 +14,10 @@ class Routes {
       "/",
       avaliacaoController.findAll
     );
+    this.router.post(
+      "/",
+      avaliacaoController.create
+    );
   }
 }
 

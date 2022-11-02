@@ -3,6 +3,7 @@ import { Equal, getRepository } from "typeorm";
 import { UsuarioEntity } from "../entity/usuario.entity";
 import * as Yup from "yup"
 import { ContratacaoEntity } from "../entity/contratacao.entity";
+import { AvaliacaoEntity } from "../entity/avaliacao.entity";
 
 class UsuarioController{
     public async findAll(req:Request, res:Response){
@@ -82,6 +83,9 @@ class UsuarioController{
           
       const findMotoboys = await getRepository(UsuarioEntity).createQueryBuilder("findmotoboys")
       .select("findmotoboys", "id")
+      .where(
+        `findmotoboys.flagtipousuario='M'`
+      )
       .getMany();
           
           res.status(200).send({data:findMotoboys});
@@ -97,15 +101,19 @@ class UsuarioController{
     const veiculoentrega = req.params.veiculo
     const veiculo = await getRepository(UsuarioEntity).findOneBy({flagtipoveiculo: Equal(veiculoentrega)})
 
+    if(!veiculo){
+      return res.status(200).send({data:[]});
+    }
     const findMotoboys = await getRepository(UsuarioEntity).createQueryBuilder("findmotoboys")
     .select("findmotoboys", "id")
     .where(
-     `findmotoboys.flagtipoveiculo='${veiculo.flagtipoveiculo}' `
+     `findmotoboys.flagtipoveiculo='${veiculo.flagtipoveiculo}' and findmotoboys.flagtipousuario='M' `
     )
     .getMany();
         
         res.status(200).send({data:findMotoboys});
     }catch (error) {
+      console.log(error)
         res.status(500).send({ error});
     }
 }
@@ -114,6 +122,7 @@ public async findByPerfil(req:Request, res:Response){
   try{
 
   const idUsuario = req.params.id
+  console.log(idUsuario)
   const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(idUsuario)})
 
   const findPerfil = await getRepository(UsuarioEntity).createQueryBuilder("findperfil")
@@ -129,11 +138,40 @@ public async findByPerfil(req:Request, res:Response){
     `findqtdentrega.codusuariocontratado=${usuario.id} `
    )
    .getCount();
-   console.log(findQtdEntrega)
 
       res.status(200).send({data:{
         ...findPerfil, qtdEntrega:findQtdEntrega
       }});
+  }catch (error) {
+      res.status(500).send({ error});
+  }
+}
+
+public async findAvaliacao(req:Request, res:Response){
+  try{
+
+  const idUsuario = req.params.id
+  console.log(idUsuario)
+  const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(idUsuario)})
+   
+   const findAvaliacao = await getRepository(AvaliacaoEntity).createQueryBuilder("findavaliacao")
+  .leftJoinAndSelect("findavaliacao.perfilavaliador", "perfilavaliador")
+  .leftJoinAndSelect("findavaliacao.perfilavaliado", "perfilavaliado")
+  .select("findavaliacao", "id")
+  .addSelect([
+    "perfilavaliador.id",
+    "perfilavaliador.nome",
+    "perfilavaliado.id",
+    "perfilavaliado.nome",
+])
+  .where(
+    `findavaliacao.codperfilavaliado=${usuario.id} `
+   )
+   .getMany();
+
+console.log(findAvaliacao)
+
+      res.status(200).send({data:findAvaliacao});
   }catch (error) {
       res.status(500).send({ error});
   }

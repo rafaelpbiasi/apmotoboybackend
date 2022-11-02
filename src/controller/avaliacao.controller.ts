@@ -1,6 +1,7 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { getRepository } from "typeorm";
 import { AvaliacaoEntity } from "../entity/avaliacao.entity";
+import * as Yup from "yup"
 
 class AvaliacaoController{
     public async findAll(req:Request, res:Response){
@@ -11,5 +12,39 @@ class AvaliacaoController{
             res.status(500).send({ error});
         }
     }
+
+    public async create(req:Request, res:Response){
+        try{
+            const data = req.body
+            console.log(data)
+            const schema = Yup.object().shape({});
+        
+            //Valida Estrutura Json
+            await schema.validate(data, {
+              abortEarly: false,
+            });
+
+
+            const avaliacao = getRepository(AvaliacaoEntity).create({ 
+                comentario: data.comentario,
+                perfilavaliador: data.codperfilavaliador.id,
+                perfilavaliado: data.codperfilavaliado
+            })
+            await getRepository(AvaliacaoEntity).save(avaliacao)
+
+            res.status(201).send(avaliacao);
+        }catch (error) {
+            if (error instanceof Yup.ValidationError) {
+                const errorMessages = {};
+                error.inner.forEach((err) => {
+                  errorMessages[err.path] = err.message;
+                });
+                return res.status(400).send(errorMessages);
+              } else {
+                return res.status(500).send(error);
+              }
+        }
+    }
+
 }
 export default new AvaliacaoController();

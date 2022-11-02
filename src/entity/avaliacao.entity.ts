@@ -9,9 +9,6 @@ export class AvaliacaoEntity{
     @Column({ })
     comentario: String;
 
-    @Column({ })
-    estrelas: Number;
-
     @ManyToOne((type) => UsuarioEntity, { onDelete: "CASCADE" })
     @JoinColumn({ name: "codperfilavaliado" })
     perfilavaliado: UsuarioEntity;
