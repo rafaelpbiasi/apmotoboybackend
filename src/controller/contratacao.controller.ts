@@ -15,14 +15,28 @@ class ContratacaoController{
         }
     }
 
+    public async deletaEntrega(req:Request, res:Response){
+        try {
+            const idContratacao = req.params.id;
+            const repository = await getRepository(ContratacaoEntity);
+            const contratacao = await repository.findOneBy({id: Number(idContratacao)})
+      
+            console.log(contratacao)
+
+            repository.remove(contratacao);
+            res.status(202).send(contratacao);
+          } catch (error) {
+            console.log(error);
+            return res.status(500).send({ error });
+          }
+    }
+
     public async updateSenha(req:Request, res:Response){
         // PEGAR ID DO REGISTRO
 
         // Pesquisar para ver se o registro existir senao existir retorna 404
 
         // Pegar os 
-
-
 
     }
 

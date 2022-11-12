@@ -48,6 +48,10 @@ class Routes {
       "/atualizacontratacao",
       contratacaoController.updateContratacaoMotoboy
     );
+    this.router.delete(
+      "/deletacontratacao/:id([0-9]+)",
+      contratacaoController.deletaEntrega
+    );
   }
 }
 
