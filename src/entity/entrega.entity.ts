@@ -41,18 +41,6 @@ export class EntregaEntity{
     valor: Number;
 
     @Column({ nullable: true })
-    LongitudeOrigem: Number;
-
-    @Column({ nullable: true })
-    LatitudeOrigem: Number;
-
-    @Column({ nullable: true })
-    LongitudeDestino: Number;
-
-    @Column({ nullable: true })
-    LatitudeDestino: Number;
-
-    @Column({ nullable: true })
     item: String;
 
     @Column({ nullable: true })

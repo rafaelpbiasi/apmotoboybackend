@@ -16,7 +16,7 @@ class AvaliacaoController{
     public async create(req:Request, res:Response){
         try{
             const data = req.body
-            console.log(data)
+        
             const schema = Yup.object().shape({});
         
             //Valida Estrutura Json

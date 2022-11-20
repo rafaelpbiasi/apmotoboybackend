@@ -90,7 +90,6 @@ class UsuarioController{
           
           res.status(200).send({data:findMotoboys});
       }catch (error) {
-        console.log(error)
           res.status(500).send({ error});
       }
   }
@@ -113,7 +112,6 @@ class UsuarioController{
         
         res.status(200).send({data:findMotoboys});
     }catch (error) {
-      console.log(error)
         res.status(500).send({ error});
     }
 }
@@ -122,7 +120,6 @@ public async findByPerfil(req:Request, res:Response){
   try{
 
   const idUsuario = req.params.id
-  console.log(idUsuario)
   const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(idUsuario)})
 
   const findPerfil = await getRepository(UsuarioEntity).createQueryBuilder("findperfil")
@@ -151,7 +148,6 @@ public async findAvaliacao(req:Request, res:Response){
   try{
 
   const idUsuario = req.params.id
-  console.log(idUsuario)
   const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(idUsuario)})
    
    const findAvaliacao = await getRepository(AvaliacaoEntity).createQueryBuilder("findavaliacao")
@@ -168,8 +164,6 @@ public async findAvaliacao(req:Request, res:Response){
     `findavaliacao.codperfilavaliado=${usuario.id} `
    )
    .getMany();
-
-console.log(findAvaliacao)
 
       res.status(200).send({data:findAvaliacao});
   }catch (error) {
@@ -201,7 +195,6 @@ public async findByRelatorio(req:Request, res:Response){
   )
   .getMany();
       
-  console.log(findRelatorio)
       res.status(200).send({data:findRelatorio});
   }catch (error) {
       res.status(500).send({ error});

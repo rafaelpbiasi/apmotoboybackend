@@ -20,23 +20,16 @@ class ContratacaoController{
             const idContratacao = req.params.id;
             const repository = await getRepository(ContratacaoEntity);
             const contratacao = await repository.findOneBy({id: Number(idContratacao)})
-      
-            console.log(contratacao)
+    
 
             repository.remove(contratacao);
             res.status(202).send(contratacao);
           } catch (error) {
-            console.log(error);
             return res.status(500).send({ error });
           }
     }
 
-    public async updateSenha(req:Request, res:Response){
-        // PEGAR ID DO REGISTRO
-
-        // Pesquisar para ver se o registro existir senao existir retorna 404
-
-        // Pegar os 
+    public async updateSenha(req:Request, res:Response){ 
 
     }
 
@@ -63,8 +56,6 @@ class ContratacaoController{
             )
             .getOne();
 
-            console.log(contratacoes)
-
             const contratacaoBanco = {
                 id: contratacoes.id,
                 status: contratacoes.status,
@@ -74,9 +65,6 @@ class ContratacaoController{
                 data: contratacoes.data
             }
 
-            console.log(contratacaoBanco)
-
-            console.log(idUsuario)
             var body = null
             if(idUsuario > 0){
                 body= {contratado: idUsuario, status: status};
@@ -89,8 +77,6 @@ class ContratacaoController{
                 ...body,
             }
 
-            console.log(data)
-
             await getRepository(ContratacaoEntity).save(data)
             res.status(200).send({data});
         }catch (error) {
@@ -101,7 +87,6 @@ class ContratacaoController{
     public async create(req:Request, res:Response){
         try{
             const data = req.body
-            console.log(data)
             const schema = Yup.object().shape({});
         
             //Valida Estrutura Json
@@ -263,8 +248,13 @@ class ContratacaoController{
             
         const idUsuario = req.params.id
         const statusentrega = req.params.status
+
         const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(idUsuario)})
         const status = await getRepository(ContratacaoEntity).findOneBy({status: Equal(statusentrega)})
+
+       if(!status){
+        return res.status(200).send({data:[]});
+       }
 
         const contratacoesEntrega = await getRepository(ContratacaoEntity).createQueryBuilder("contratacoesentrega")
         .leftJoinAndSelect("contratacoesentrega.entrega", "entrega")
@@ -282,11 +272,9 @@ class ContratacaoController{
          `contratacoesentrega.codusuariocontratante=${usuario.id} and contratacoesentrega.status='${status.status}' `
         )
         .getMany();
-            
-        console.log(contratacoesEntrega)
+
             res.status(200).send({data:contratacoesEntrega});
         }catch (error) {
-            console.log(error)
             res.status(500).send({ error});
         }
     }

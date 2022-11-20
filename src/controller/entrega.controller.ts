@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { EntregaEntity } from "../entity/entrega.entity";
 import * as Yup from "yup"
-import { UsuarioEntity } from "../entity/usuario.entity";
 
 class EntregaController{
     public async findAll(req:Request, res:Response){
@@ -17,7 +16,6 @@ class EntregaController{
     public async create(req:Request, res:Response){
         try{
             const data = req.body
-            console.log(data)
             const schema = Yup.object().shape({
                 ruaorigem: Yup.string().required("É obrigatorio"),
                 numeroorigem: Yup.string().required("É obrigatorio"),
