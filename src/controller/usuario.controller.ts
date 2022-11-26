@@ -23,6 +23,12 @@ class UsuarioController{
           )
 
           if(usuario){
+            const usuarioAtualizado={
+              ...usuario,
+              uuid: data.uuid,
+          }
+          await getRepository(UsuarioEntity).save(usuarioAtualizado)
+
             res.status(200).send({usuario});
             return 
           }
@@ -37,6 +43,7 @@ class UsuarioController{
     public async create(req:Request, res:Response){
         try{
             const data = req.body
+            console.log(data)
             enum testeflag{
                 verdadeiro='T', 
                 falso='F'
@@ -85,6 +92,8 @@ class UsuarioController{
       .select("findmotoboys", "id")
       .where(
         `findmotoboys.flagtipousuario='M'`
+      ).orderBy(
+        `findmotoboys.mediaestrelas`, `DESC` 
       )
       .getMany();
           
@@ -94,19 +103,17 @@ class UsuarioController{
       }
   }
 
-  public async findByMotoboysVeiculo(req:Request, res:Response){
+  public async findByMotoboysVerificado(req:Request, res:Response){
     try{
     
-    const veiculoentrega = req.params.veiculo
-    const veiculo = await getRepository(UsuarioEntity).findOneBy({flagtipoveiculo: Equal(veiculoentrega)})
+    const flagVerificado = req.params.verificado
 
-    if(!veiculo){
-      return res.status(200).send({data:[]});
-    }
     const findMotoboys = await getRepository(UsuarioEntity).createQueryBuilder("findmotoboys")
     .select("findmotoboys", "id")
     .where(
-     `findmotoboys.flagtipoveiculo='${veiculo.flagtipoveiculo}' and findmotoboys.flagtipousuario='M' `
+      `findmotoboys.flagtipousuario='M' and findmotoboys.flagverificado='${flagVerificado}'`
+    ).orderBy(
+      `findmotoboys.mediaestrelas`, `DESC` 
     )
     .getMany();
         
@@ -188,7 +195,6 @@ public async findByRelatorio(req:Request, res:Response){
       "contratante.nome",
       "contratado.id",
       "contratado.nome",
-      "contratado.flagtipoveiculo",
   ])
   .where(
    `findrelatorio.codusuariocontratado=${usuario.id}`

@@ -1,9 +1,12 @@
 import { Request, response, Response } from "express";
 import { Equal, getRepository, MoreThanOrEqual, Raw } from "typeorm";
 import * as Yup from "yup"
+import { AvaliacaoEntity } from "../entity/avaliacao.entity";
 import { ContratacaoEntity } from "../entity/contratacao.entity";
 import { EntregaEntity } from "../entity/entrega.entity";
 import { UsuarioEntity } from "../entity/usuario.entity";
+import { TELAS } from "../utils/enum";
+import { enviarNotificacao } from "../utils/notificacao";
 
 class ContratacaoController{
     public async findAll(req:Request, res:Response){
@@ -37,7 +40,7 @@ class ContratacaoController{
         try{
 
             const idContratacao = req.body.idContratacao
-            const idUsuario = req.body.idUsuario
+            const idUsuario = req.body.idContratado
             const status = req.body.status
             const contratacao = await getRepository(ContratacaoEntity).findOneBy({id: Number(idContratacao)})
             
@@ -50,6 +53,7 @@ class ContratacaoController{
                 "entrega",
                 "contratante.id",
                 "contratado.id",
+                "contratante.uuid",
             ])
             .where(
             `contratacoes.id=${contratacao.id}`
@@ -78,6 +82,22 @@ class ContratacaoController{
             }
 
             await getRepository(ContratacaoEntity).save(data)
+
+            if(status === 'F'){
+                console.log(idUsuario)
+                const messages = {
+                    to: contratacoes.contratante.uuid,
+                    sound: "default",
+                    title: "Easy Delivery",
+                    body: 'Entrega Finalizada!',
+                    data: {
+                        tela: TELAS.PERFILAVALIADO,
+                        idUsuario: idUsuario,
+                    },
+                };
+                await enviarNotificacao(messages);
+            }
+
             res.status(200).send({data});
         }catch (error) {
             res.status(500).send({ error});
@@ -173,7 +193,7 @@ class ContratacaoController{
          `contratacoesmotoboy.codusuariocontratado=${usuario.id}`
         )
         .getMany();
-            
+
             res.status(200).send({data:contratacoesMotoboy});
         }catch (error) {
             res.status(500).send({ error});
@@ -298,7 +318,6 @@ class ContratacaoController{
             "contratante.nome",
             "contratado.id",
             "contratado.nome",
-            "contratado.flagtipoveiculo",
         ])
         .where(
          `contratacoesmotoboys.codusuariocontratado=${usuario.id} and contratacoesmotoboys.status='${status.status}' `

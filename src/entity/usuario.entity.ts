@@ -35,13 +35,23 @@ export class UsuarioEntity{
     cep: string;
 
     @Column({ nullable: true })
-    flagtipoveiculo: String;
-
-    @Column({ nullable: true })
     fotocnh: String;
 
     @Column({ nullable: false })
     flagconfirmatermos: String;
+
+    @Column({ nullable: false, default: 'F' })
+    flagverificado: String;
+
+    @Column({ nullable: true,
+      type: "decimal",
+      precision: 7,
+      scale: 2,
+      default: 0,})
+  mediaestrelas: number;
+
+  @Column({ nullable: false })
+  uuid: String;
 
     @OneToMany(() => ContratacaoEntity, (contratadas) => contratadas.contratante, {
         cascade: ["insert", "update", "remove"],

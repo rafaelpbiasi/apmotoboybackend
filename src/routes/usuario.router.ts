@@ -28,8 +28,8 @@ class Routes {
       usuarioController.findByMotoboys
     );
     this.router.get(
-      "/motoboys/veiculo/:veiculo",
-      usuarioController.findByMotoboysVeiculo
+      "/motoboys/verificado/:verificado",
+      usuarioController.findByMotoboysVerificado
     );
     this.router.get(
       "/perfil/:id([0-9]+)",

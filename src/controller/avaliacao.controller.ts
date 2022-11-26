@@ -2,6 +2,7 @@ import { Request, response, Response } from "express";
 import { getRepository } from "typeorm";
 import { AvaliacaoEntity } from "../entity/avaliacao.entity";
 import * as Yup from "yup"
+import { UsuarioEntity } from "../entity/usuario.entity";
 
 class AvaliacaoController{
     public async findAll(req:Request, res:Response){
@@ -24,13 +25,31 @@ class AvaliacaoController{
               abortEarly: false,
             });
 
-
             const avaliacao = getRepository(AvaliacaoEntity).create({ 
                 comentario: data.comentario,
                 perfilavaliador: data.codperfilavaliador.id,
-                perfilavaliado: data.codperfilavaliado
+                perfilavaliado: data.codperfilavaliado,
+                estrela: data.estrela
             })
             await getRepository(AvaliacaoEntity).save(avaliacao)
+
+            const avaliacoes = await getRepository(AvaliacaoEntity).createQueryBuilder("avaliacao")
+            .select("avaliacao", "id")
+            .where(
+              `avaliacao.codperfilavaliado=${data.codperfilavaliado} `
+             )
+             .getMany();
+         
+             var estrelas = 0
+             avaliacoes.forEach(item=>{estrelas+=item.estrela})
+
+             const usuario = await getRepository(UsuarioEntity).findOneBy({id: Number(data.codperfilavaliado)})
+
+             const usuarioAtualizado={
+                ...usuario,
+                mediaestrelas: estrelas/avaliacoes.length,
+            }
+            await getRepository(UsuarioEntity).save(usuarioAtualizado)
 
             res.status(201).send(avaliacao);
         }catch (error) {

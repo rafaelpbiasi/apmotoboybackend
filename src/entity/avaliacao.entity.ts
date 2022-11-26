@@ -6,8 +6,11 @@ export class AvaliacaoEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ })
+    @Column({ nullable: true })
     comentario: String;
+
+    @Column({ nullable: true })
+    estrela: number;
 
     @ManyToOne((type) => UsuarioEntity, { onDelete: "CASCADE" })
     @JoinColumn({ name: "codperfilavaliado" })
